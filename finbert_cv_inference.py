@@ -25,15 +25,14 @@ label2id = {
 id2label = {id:label for label, id in label2id.items()}
 base_model_path = "ProsusAI/finbert"
 
-if __name__ == "__main__":
-    mda_manual_folder_path = sys.argv[1]
-    mda_tone_df_path = sys.argv[2]
-    test_fold_index_str = sys.argv[3]
-    model_folder_path = sys.argv[4]
-    result_folder_path = sys.argv[5]
-
-    test_fold_index = int(test_fold_index_str)
-
+def run(
+        mda_manual_folder_path: str,
+        mda_tone_df_path: str,
+        test_fold_index: int,
+        result_folder_path: str,
+        *,
+        model_folder_path: str | None = None
+):
     def gen():
         tone_df = pd.read_csv(mda_tone_df_path)
         folder_path = mda_manual_folder_path
@@ -146,8 +145,9 @@ if __name__ == "__main__":
 
     best_model = trainer.model
     assert isinstance(best_model, PreTrainedModel)
-    best_model.save_pretrained(Path(model_folder_path,
-                                    f"FinBERT_Fold_{test_fold_index}"))
+    if model_folder_path is not None:
+        best_model.save_pretrained(Path(model_folder_path,
+                                        f"FinBERT_Fold_{test_fold_index}"))
 
     result_folder_path = Path(result_folder_path)
     result_folder_path.mkdir(exist_ok=True)
@@ -212,3 +212,24 @@ if __name__ == "__main__":
         result_folder_path,
         f"Fold_{test_fold_index}_Result.csv"
     ), index=False)
+
+if __name__ == "__main__":
+    mda_manual_folder_path = sys.argv[1]
+    mda_tone_df_path = sys.argv[2]
+    test_fold_index_str = sys.argv[3]
+    result_folder_path = sys.argv[4]
+
+    if len(result_folder_path) >= 6:
+        model_folder_path = sys.argv[5]
+    else:
+        model_folder_path = None
+
+    test_fold_index = int(test_fold_index_str)
+    
+    run(
+        mda_manual_folder_path,
+        mda_tone_df_path,
+        test_fold_index,
+        result_folder_path,
+        model_folder_path=model_folder_path
+    )
