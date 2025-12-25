@@ -31,7 +31,8 @@ def run(
         test_fold_index: int,
         result_folder_path: str,
         *,
-        model_folder_path: str | None = None
+        model_folder_path: str | None = None,
+        gradient_accumulation_steps: int = 3
 ):
     def gen():
         tone_df = pd.read_csv(mda_tone_df_path)
@@ -107,7 +108,7 @@ def run(
         learning_rate=3e-6,  # Also learning rate for 1e-2 sucks. 2e-6 lebih buruk dari 3e-6.
         per_device_train_batch_size=1,
         per_device_eval_batch_size=1,
-        gradient_accumulation_steps=3,
+        gradient_accumulation_steps=gradient_accumulation_steps,
         num_train_epochs=50,  # Max, I guess. I hope it's enough.
         weight_decay=0.01,
         eval_strategy="epoch",
