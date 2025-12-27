@@ -1,5 +1,6 @@
 from pathlib import Path
 import sys
+import time
 
 import evaluate
 from datasets import Dataset, DatasetDict
@@ -102,8 +103,10 @@ def run(
         # Default dropout
     )
 
+    timestamp = int(time.time())
+
     training_args = TrainingArguments(
-        run_name=f"FinBERT Cross Validation Inference - Index {test_fold_index}",
+        run_name=f"{base_model_path} - Cross Validation Inference - Index {test_fold_index} ({timestamp})",
 
         learning_rate=3e-6,  # Also learning rate for 1e-2 sucks. 2e-6 lebih buruk dari 3e-6.
         per_device_train_batch_size=1,
