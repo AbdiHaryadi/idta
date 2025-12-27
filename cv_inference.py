@@ -33,7 +33,8 @@ def run(
         *,
         model_folder_path: str | None = None,
         gradient_accumulation_steps: int = 3,
-        base_model_path: str = "ProsusAI/finbert"
+        base_model_path: str = "ProsusAI/finbert",
+        model_max_length: int | None = None,
 ):
     def gen():
         tone_df = pd.read_csv(mda_tone_df_path)
@@ -72,7 +73,11 @@ def run(
         text = example["Text"]
         tone = example["YoY_Close_Category"]
 
-        example = tokenizer(text, truncation=True)
+        if model_max_length is None:
+            example = tokenizer(text, truncation=True)
+        else:
+            example = tokenizer(text, truncation=True, max_length=model_max_length)
+
         example['labels'] = [label2id[tone]]
 
         return example
@@ -216,24 +221,3 @@ def run(
         result_folder_path,
         f"Fold_{test_fold_index}_Result.csv"
     ), index=False)
-
-if __name__ == "__main__":
-    mda_manual_folder_path = sys.argv[1]
-    mda_tone_df_path = sys.argv[2]
-    test_fold_index_str = sys.argv[3]
-    result_folder_path = sys.argv[4]
-
-    if len(result_folder_path) >= 6:
-        model_folder_path = sys.argv[5]
-    else:
-        model_folder_path = None
-
-    test_fold_index = int(test_fold_index_str)
-    
-    run(
-        mda_manual_folder_path,
-        mda_tone_df_path,
-        test_fold_index,
-        result_folder_path,
-        model_folder_path=model_folder_path
-    )
