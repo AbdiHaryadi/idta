@@ -105,6 +105,10 @@ def run(
         num_labels=len(id2label),
         id2label=id2label,
         label2id=label2id,
+        
+        # Ini aneh karena di Kaggle, ini tidak diperlukan. Kok bisa-bisanya tetap diperlukan?
+        # Di FinBERT, sudah otomatis.
+        problem_type="single_label_classification",
         # Default dropout
     )
 
