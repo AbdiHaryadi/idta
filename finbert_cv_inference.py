@@ -23,7 +23,6 @@ label2id = {
     "netral": 2
 }
 id2label = {id:label for label, id in label2id.items()}
-base_model_path = "ProsusAI/finbert"
 
 def run(
         mda_manual_folder_path: str,
@@ -32,7 +31,8 @@ def run(
         result_folder_path: str,
         *,
         model_folder_path: str | None = None,
-        gradient_accumulation_steps: int = 3
+        gradient_accumulation_steps: int = 3,
+        base_model_path: str = "ProsusAI/finbert"
 ):
     def gen():
         tone_df = pd.read_csv(mda_tone_df_path)
